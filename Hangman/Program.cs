@@ -5,72 +5,95 @@ class Hangman
 {
     static void Main()
     {
-        List<string> words = new List<string> { "HELLO", "WORLD", "HANGMAN" , "PROGRAMING" }; // คำสำหรับแต่ละด่าน
-        int maxLives = 7;
+        bool playAgain = true;
 
-        foreach (string word in words)
+        while (playAgain)
         {
-            int currentLives = maxLives;
-            bool win = false;
-            List<char> guessedLetters = new List<char>();
+            List<string> words = new List<string> { "HELLO", "WORLD", "HANGMAN", "PROGRAMMING" }; // คำสำหรับแต่ละด่าน
+            int maxLives = 8; // จำนวนชีวิตสูงสุด
 
-            while (currentLives > 0 && !win)
+            foreach (string word in words)
             {
-                Console.WriteLine("\nEnter A-Z only to guess the word , Select one English letter at a time.");
+                int currentLives = maxLives;
+                bool win = false;
+                List<char> guessedLetters = new List<char>();
 
-                foreach (char c in word)
+                while (currentLives > 0 && !win)
                 {
-                    if (guessedLetters.Contains(c))
-                        Console.Write(c);
+                    Console.WriteLine("\nEnter A-Z only to guess the word, Select one English letter at a time.");
+
+                    foreach (char c in word)
+                    {
+                        if (guessedLetters.Contains(c))
+                            Console.Write(c);
+                        else
+                            Console.Write("_");
+                    }
+
+                    Console.WriteLine("\nPlease guess a letter!");
+                    Console.WriteLine(currentLives + "/" + maxLives + " lives remaining.");
+
+                    char? guess = null;
+                    while (guess == null)
+                    {
+                        string? input = Console.ReadLine();
+                        if (!string.IsNullOrEmpty(input) && input.Length == 1 && char.IsLetter(input[0]))
+                        {
+                            guess = char.ToUpper(input[0]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid input, please guess a single English letter!");
+                        }
+                    }
+
+                    if (word.Contains(guess.Value) && !guessedLetters.Contains(guess.Value))
+                        Console.WriteLine("Correct!");
                     else
-                        Console.Write("_");
+                    {
+                        Console.WriteLine("Incorrect!");
+                        currentLives--;
+                    }
+                    guessedLetters.Add(guess.Value);
+
+                    bool wordComplete = true;
+
+                    foreach (char c in word)
+                        if (!guessedLetters.Contains(c))
+                            wordComplete = false;
+
+                    win = wordComplete;
                 }
 
-                Console.WriteLine("\nPlease guess a letter!");
-                Console.WriteLine(currentLives + "/" + maxLives + " lives remaining.");
-
-                char? guess = null;
-                while (guess == null)
-                {
-                    string? input = Console.ReadLine();
-                    if (!string.IsNullOrEmpty(input))
-                    {
-                        guess = Convert.ToChar(input);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid input, please guess a letter!");
-                    }
-                }
-
-                if (word.Contains(guess.Value) && !guessedLetters.Contains(guess.Value))
-                    Console.WriteLine("Correct!");
+                if (win)
+                    Console.WriteLine("Congratulations, you passed this level!");
                 else
                 {
-                    Console.WriteLine("Incorrect!");
-                    currentLives--;
+                    Console.WriteLine("You lose...");
+                    break; // จบเกมถ้าผู้เล่นแพ้
                 }
-                guessedLetters.Add(guess.Value);
-
-                bool wordComplete = true;
-
-                foreach (char c in word)
-                    if (!guessedLetters.Contains(c))
-                        wordComplete = false;
-
-                win = wordComplete;
             }
 
-            if (win)
-                Console.WriteLine("Congratulations, you passed this level!");
-            else
+            if (words.Last() == "PROGRAMMING") // ตรวจสอบว่าผู้เล่นผ่านด่านสุดท้ายหรือไม่
+                Console.WriteLine("Congratulations, you win the entire game!");
+
+            // เงื่อนไขตอนจบเกม
+            string response = "";
+            while (response != "yes" && response != "no")
             {
-                Console.WriteLine("You lose...");
-                break; // จบเกมถ้าผู้เล่นแพ้
+                Console.WriteLine("Do you want to play again? (yes/no)");
+                response = Console.ReadLine().ToLower();
+                if (response != "yes" && response != "no")
+                {
+                    Console.WriteLine("Invalid input, please type 'yes' or 'no'!");
+                }
+            }
+
+            if (response != "yes")
+            {
+                playAgain = false;
+                Console.WriteLine("Thanks for playing!");
             }
         }
-
-        if (words.Last() == "hangman") // ตรวจสอบว่าผู้เล่นผ่านด่านสุดท้ายหรือไม่
-            Console.WriteLine("Congratulations, you win the entire game!");
     }
 }
