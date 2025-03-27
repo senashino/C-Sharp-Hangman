@@ -9,8 +9,8 @@ class Hangman
 
         while (playAgain)
         {
-            List<string> words = new List<string> { "HELLO", "WORLD", "HANGMAN", "PROGRAMMING" }; // คำสำหรับแต่ละด่าน
-            int maxLives = 8; // จำนวนชีวิตสูงสุด
+            List<string> words = new List<string> { "HELLO", "WORLD", "COMPUTER", "PROGRAMMING", "DEVELOPER" }; // คำสำหรับแต่ละด่าน
+            int maxLives = 8;
 
             foreach (string word in words)
             {
@@ -75,17 +75,21 @@ class Hangman
             }
 
             if (words.Last() == "PROGRAMMING") // ตรวจสอบว่าผู้เล่นผ่านด่านสุดท้ายหรือไม่
-                Console.WriteLine("Congratulations, you win the entire game!");
+                Console.WriteLine("🎉Congratulations, you win the entire game!🎉");
 
             // เงื่อนไขตอนจบเกม
             string response = "";
             while (response != "yes" && response != "no")
             {
                 Console.WriteLine("Do you want to play again? (yes/no)");
-                response = Console.ReadLine().ToLower();
+                response = Console.ReadLine();
+                if (response != null)
+                {
+                    response = response.ToLower();
+                }
                 if (response != "yes" && response != "no")
                 {
-                    Console.WriteLine("Invalid input, please type 'yes' or 'no'!");
+                    Console.WriteLine("😢 Invalid input, please type 'yes' or 'no'!");
                 }
             }
 
