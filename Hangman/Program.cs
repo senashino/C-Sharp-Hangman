@@ -320,3 +320,4 @@ class Program
         HangmanGame game = new HangmanGame();
         game.Play();
     }
+}
