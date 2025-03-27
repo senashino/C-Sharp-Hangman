@@ -6,8 +6,18 @@ using System.Linq;
 class Player
 {
     public string Name { get; private set; }
-    public int Score { get; private set; }
-    public int Lives { get; set; }
+    private int score;  // **Encapsulation**: ซ่อนข้อมูลนี้ไม่ให้เข้าถึงจากภายนอก
+    public int Score
+    {
+        get { return score; }  // Getter เพื่อให้สามารถอ่านค่าได้
+        protected set { score = value; }  // **Encapsulation**: Setter ที่สามารถใช้ภายในคลาสหรือคลาสที่สืบทอด
+    }
+    private int lives;  // **Encapsulation**: ซ่อนข้อมูลนี้ไม่ให้เข้าถึงจากภายนอก
+    public int Lives
+    {
+        get { return lives; }  // Getter เพื่อให้สามารถอ่านค่าได้
+        set { lives = value; }
+    }
 
     public Player(string name, int lives)
     {
@@ -19,6 +29,11 @@ class Player
     public void IncreaseScore()
     {
         Score += 10;
+    }
+
+    public virtual void MakeMove() // **Polymorphism**: เมธอดทั่วไปที่ทายคำ สามารถเขียนทับได้
+    {
+        Console.WriteLine($"{Name} is making a move...");
     }
 
     // ซื้อชีวิตเพิ่ม
@@ -34,6 +49,32 @@ class Player
         {
             Console.WriteLine("❌ Not enough points to buy an extra life.");
         }
+    }
+}
+
+// **Inheritance**: สืบทอดจาก Player และเปลี่ยนพฤติกรรม
+class HumanPlayer : Player
+{
+    public HumanPlayer(string name, int lives) : base(name, lives) { }
+
+    // **Polymorphism**: เขียนทับเมธอด MakeMove สำหรับ HumanPlayer
+    public override void MakeMove()
+    {
+        Console.WriteLine($"{Name}, it's your turn! Please guess a letter.");
+    }
+}
+
+// **Inheritance**: สืบทอดจาก Player และเปลี่ยนพฤติกรรม
+class ComputerPlayer : Player
+{
+    public ComputerPlayer(string name, int lives) : base(name, lives) { }
+
+    // **Polymorphism**: เขียนทับเมธอด MakeMove สำหรับ ComputerPlayer
+    public override void MakeMove()
+    {
+        Random rand = new Random();
+        char guess = (char)('a' + rand.Next(0, 26)); // ทายตัวอักษรแบบสุ่ม
+        Console.WriteLine($"{Name} (Computer) is making a move! Guessed letter: {guess}");
     }
 }
 
@@ -122,9 +163,9 @@ class HangmanGame
         scoreboard = new Scoreboard();
 
         Console.Write("Enter Player 1 name: ");
-        players.Add(new Player(Console.ReadLine(), maxLives));
+        players.Add(new HumanPlayer(Console.ReadLine(), maxLives));  // **HumanPlayer** เป็นคนเล่น
         Console.Write("Enter Player 2 name: ");
-        players.Add(new Player(Console.ReadLine(), maxLives));
+        players.Add(new ComputerPlayer(Console.ReadLine(), maxLives));  // **ComputerPlayer** คอมพิวเตอร์เล่น
 
         scoreboard.AddPlayer(players[0]);
         scoreboard.AddPlayer(players[1]);
@@ -162,6 +203,7 @@ class HangmanGame
                     break;
                 }
 
+                players[currentPlayerIndex].MakeMove();  // **Polymorphism**: ใช้ฟังก์ชันที่เขียนทับในแต่ละคลาส
                 char guess = GetPlayerGuess();
                 ProcessGuess(guess);
             }
@@ -278,4 +320,3 @@ class Program
         HangmanGame game = new HangmanGame();
         game.Play();
     }
-}
