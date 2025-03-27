@@ -1,0 +1,6 @@
+hello|A greeting
+world|A place we live
+computer|An electronic device
+programming|The act of writing code
+developer|A person who creates software
+
